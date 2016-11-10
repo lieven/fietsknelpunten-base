@@ -4,12 +4,12 @@ require_once(__DIR__ . '/core.php');
 
 
 // load module
-$moduleName = GetVar('module', $GLOBALS['config']['default_module']);
+$moduleName = GetArg('module', $GLOBALS['config']['default_module']);
 
 if ($moduleName)
 {
 	$module =& Module::Get($moduleName);
-	$module->run(GetVar('action', 'default'));
+	$module->run(GetArg('action', 'default'));
 	exit;
 }
 

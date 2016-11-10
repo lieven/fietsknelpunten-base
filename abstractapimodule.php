@@ -36,7 +36,7 @@ class AbstractApiModule extends Module
 			$args = array();
 			foreach ($parameters as $parameter)
 			{
-				$value = GetVar($parameter);
+				$value = GetArg($parameter);
 				if ($value === null)
 				{
 					throw new ApiException(ApiException::PARAMETER_REQUIRED, 'Parameter required: ' . $parameter);

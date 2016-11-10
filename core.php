@@ -10,6 +10,12 @@ else
 	die('Please create a config file (see config.dist.php)');
 }
 
+if (get_magic_quotes_gpc())
+{
+	throw new Exception('Please disable magic quotes');
+}
+
+
 require_once(__DIR__ . '/module.php');
 require_once(__DIR__ . '/abstractapimodule.php');
 require_once(__DIR__ . '/view.php');
@@ -62,15 +68,14 @@ function __autoload($inClassName)
 	}
 }
 
-// Get the unslashed value for the request argument indicated by $inName
-function GetVar($inName, $inDefault = NULL)
+function GetArg($inName, $inDefault = NULL, $inType = INPUT_GET, $inFilter = FILTER_DEFAULT)
 {
-	if (get_magic_quotes_gpc())
+	$result = filter_input($inType, $inName, $inFilter);
+	if ($result === NULL)
 	{
-		throw new Exception('Please disable magic quotes');
+		$result = $inDefault;
 	}
-	
-	return isset($_REQUEST[$inName]) ? $_REQUEST[$inName] : $inDefault;
+	return $result;
 }
 
 function Show($inText)
