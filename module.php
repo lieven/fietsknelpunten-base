@@ -15,7 +15,9 @@ class Module
 	public function run($inAction)
 	{
 		if (! preg_match('/^([a-zA-Z][a-zA-Z0-9_]*)$/', $inAction))
+		{
 			throw new Exception('Invalid action name: '. $inAction);
+		}
 		
 		$actionMethod = $inAction .'Action';
 		if (! method_exists($this, $actionMethod))

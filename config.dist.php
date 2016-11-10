@@ -1,17 +1,24 @@
-<?php // core configuration
+<?php
 
-$GLOBALS['config'] = array();
+// Make a copy of this file at config/config.php and edit the values below:
 
-// databases
-$GLOBALS['config']['databases'] = array();
 
-// you should set up at least one database, called 'main'
-$GLOBALS['config']['databases']['main'] = array();
-$GLOBALS['config']['databases']['main']['host']            = 'localhost';
-$GLOBALS['config']['databases']['main']['user']            = 'username';
-$GLOBALS['config']['databases']['main']['pass']            = 'password';
-$GLOBALS['config']['databases']['main']['database']        = 'database';
-
+$GLOBALS['config'] = array
+(
+	// you should set up at least one database, called 'main'
+	'databases' => array
+	(
+		'main' => array
+		(
+			'host' => 'localhost',
+			'user' => 'username',
+			'pass' => 'password',
+			'database' => 'database'
+		)
+	),
+	// you should create at least one module (see module.php)
+	'default_module' => 'TODO'
+);
 
 
 date_default_timezone_set('Europe/Brussels');

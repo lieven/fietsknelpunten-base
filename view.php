@@ -27,9 +27,11 @@ class View
 		}
 		
 		// otherwise, load the standard view
-		$this->viewIncludePath = $inModuleName === NULL ? "views/$inViewName.php" : "modules/$inModuleName/views/$inViewName.php";
+		$this->viewIncludePath = "views/$inViewName.php";
 		if (! stream_resolve_include_path($this->viewIncludePath))
+		{
 			throw new Exception("View '$inViewName' not found for module '$inModuleName'");
+		}
 	}
 	
 	public function show()

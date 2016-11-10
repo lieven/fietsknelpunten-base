@@ -6,7 +6,8 @@ if (stream_resolve_include_path('config/config.php'))
 }
 else
 {
-	$GLOBALS['config'] = array();
+	header('Content-Type: text/plain');
+	die('Please create a config file (see config.dist.php)');
 }
 
 require_once(__DIR__ . '/module.php');
