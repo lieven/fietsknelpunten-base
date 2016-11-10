@@ -10,7 +10,7 @@ else
 }
 
 require_once(__DIR__ . '/module.php');
-require_once(__DIR__ . '/apimodule.php');
+require_once(__DIR__ . '/abstractapimodule.php');
 require_once(__DIR__ . '/view.php');
 require_once(__DIR__ . '/database.php');
 

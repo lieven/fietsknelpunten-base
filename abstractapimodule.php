@@ -6,13 +6,13 @@ class ApiException extends Exception
 	const UNKNOWN_ACTION = 2;
 	const PARAMETER_REQUIRED = 3;
 	
-	public function __construct($inErrorCode, $inMessage)
+	public function __construct($inErrorCode, $inMessage = '')
 	{
 		parent::__construct($inMessage, $inErrorCode);	
 	}
 }
 
-class ApiModule extends Module
+class AbstractApiModule extends Module
 {
 	public function run($inAction)
 	{
