@@ -4,7 +4,7 @@ require_once(__DIR__ . '/core.php');
 
 
 // load module
-$moduleName = GetArg('module', $GLOBALS['config']['default_module']);
+$moduleName = GetArg('module', GetConfig('default_module'));
 
 if ($moduleName)
 {

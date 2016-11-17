@@ -1,13 +1,13 @@
 <?php // core functions
 
-if (stream_resolve_include_path('config/config.php'))
+if (defined('CONFIG_FILE') && stream_resolve_include_path(CONFIG_FILE))
 {
-	require_once('config/config.php');
+	require_once(CONFIG_FILE);
 }
 else
 {
 	header('Content-Type: text/plain');
-	die('Please create a config file (see config.dist.php)');
+	die('Please create a config file (see config.dist.php) and define CONFIG_FILE');
 }
 
 if (get_magic_quotes_gpc())
@@ -77,6 +77,44 @@ function GetArg($inName, $inDefault = NULL, $inType = INPUT_GET, $inFilter = FIL
 	}
 	return $result;
 }
+
+// Type-safe accessor for $GLOBALS['config'][$key1][$key2]...[$keyN]
+function GetConfig(/* keys */)
+{
+	$result = NULL;
+	
+	if (isset($GLOBALS['config']))
+	{
+		$result =& $GLOBALS['config'];
+		
+		for ($i = 0, $n = func_num_args(); $i < $n; ++$i)
+		{
+			$key = func_get_arg($i);
+			if (!is_string($key) || !isset($result[$key]))
+			{
+				$result = NULL;
+				break;
+			}
+			
+			$result =& $result[$key];
+			
+			if ($i + 1 < $n && !is_array($result))
+			{
+				$result = NULL;
+				break;
+			}
+		}
+	}
+	
+	return $result;
+}
+
+function GetHeader($inHeaderName)
+{
+	$key = 'HTTP_' . strtoupper(str_replace('-', '_', $inHeaderName));
+	return isset($_SERVER[$key]) ? $_SERVER[$key] : NULL;
+}
+
 
 function Show($inText)
 {
