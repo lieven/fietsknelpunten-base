@@ -34,39 +34,18 @@ function FatalExceptionHandler($inException)
 set_exception_handler('FatalExceptionHandler');
 
 
-
-// load modules based on their class name
-function __autoload($inClassName)
+function AutoLoad($inClassName)
 {
-	try
+	$path = dirname(__DIR__) .'/'. str_replace('\\', '/', $inClassName) . '.php';
+	
+	if (file_exists($path))
 	{
-		$matches = array();
-		
-		if (preg_match('/^([a-zA-Z][a-zA-Z0-9_]*)Module$/', $inClassName, $matches))
-		{
-			// e.g. MyModule should be defined in mymodule.php
-			$name = strtolower($matches[1]);
-			
-			$path = sprintf('%smodule.php', $name);;
-			if (! stream_resolve_include_path($path))
-				throw new Exception('Module not found: '. $inClassName);
-			
-			require_once $path;
-			
-			if (! class_exists($inClassName, false))
-				throw new Exception("Module '$name' not defined in $path");
-		}
-		else
-		{
-			throw new Exception('Invalid class name: '. $inClassName);
-		}
-	}
-	catch (Exception $e) // work around standard "not found"-handler
-	{
-		$code = 'class %s { public function __construct() { throw unserialize(stripslashes(\'%s\')); } }';
-		eval(sprintf($code, $inClassName, addslashes(serialize($e))));
+		require($path);
 	}
 }
+
+spl_autoload_register('AutoLoad');
+
 
 function GetArg($inName, $inDefault = NULL, $inType = INPUT_GET, $inFilter = FILTER_DEFAULT)
 {
