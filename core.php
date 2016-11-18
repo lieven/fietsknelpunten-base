@@ -1,26 +1,8 @@
 <?php // core functions
 
-if (defined('CONFIG_FILE') && stream_resolve_include_path(CONFIG_FILE))
-{
-	require_once(CONFIG_FILE);
-}
-else
-{
-	header('Content-Type: text/plain');
-	die('Please create a config file (see config.dist.php) and define CONFIG_FILE');
-}
+namespace Base;
 
-if (get_magic_quotes_gpc())
-{
-	throw new Exception('Please disable magic quotes');
-}
-
-
-require_once(__DIR__ . '/module.php');
-require_once(__DIR__ . '/abstractapimodule.php');
-require_once(__DIR__ . '/view.php');
-require_once(__DIR__ . '/database.php');
-
+use \Exception;
 
 
 // fatal exception handling
@@ -31,7 +13,7 @@ function FatalExceptionHandler($inException)
 	die('*** fatal exception: '. $inException->getMessage());
 }
 
-set_exception_handler('FatalExceptionHandler');
+set_exception_handler('\Base\FatalExceptionHandler');
 
 
 function AutoLoad($inClassName)
@@ -44,7 +26,10 @@ function AutoLoad($inClassName)
 	}
 }
 
-spl_autoload_register('AutoLoad');
+spl_autoload_register('\Base\AutoLoad');
+
+
+Config::Load();
 
 
 function GetArg($inName, $inDefault = NULL, $inType = INPUT_GET, $inFilter = FILTER_DEFAULT)
@@ -57,36 +42,6 @@ function GetArg($inName, $inDefault = NULL, $inType = INPUT_GET, $inFilter = FIL
 	return $result;
 }
 
-// Type-safe accessor for $GLOBALS['config'][$key1][$key2]...[$keyN]
-function GetConfig(/* keys */)
-{
-	$result = NULL;
-	
-	if (isset($GLOBALS['config']))
-	{
-		$result =& $GLOBALS['config'];
-		
-		for ($i = 0, $n = func_num_args(); $i < $n; ++$i)
-		{
-			$key = func_get_arg($i);
-			if (!is_string($key) || !isset($result[$key]))
-			{
-				$result = NULL;
-				break;
-			}
-			
-			$result =& $result[$key];
-			
-			if ($i + 1 < $n && !is_array($result))
-			{
-				$result = NULL;
-				break;
-			}
-		}
-	}
-	
-	return $result;
-}
 
 function GetHeader($inHeaderName)
 {

@@ -1,37 +1,24 @@
 <?php // View
 
+namespace Base;
+
+use \Exception;
+
+
 class View
 {
 	private $args = array();
 	private $viewIncludePath;
 	private $wrapperView = NULL;
 	
-	public function __construct($inViewName, $inModuleName = NULL)
+	public function __construct($inViewPath)
 	{
-		// ask the module for a path
-		if ($inModuleName !== NULL)
+		if (!stream_resolve_include_path($inViewPath))
 		{
-			try
-			{
-				$module =& Module::Get($inModuleName);
-				$this->viewIncludePath = $module->getViewPath($inViewName);
-				if (stream_resolve_include_path($this->viewIncludePath))
-					return;
-			}
-			catch (Exception $e)
-			{
-				error_log($e->getMessage());
-			}
-			
-			throw new Exception('View path not found: ' . $this->viewIncludePath);
+			throw new Exception('View path not found: ' . $inViewPath);
 		}
 		
-		// otherwise, load the standard view
-		$this->viewIncludePath = "views/$inViewName.php";
-		if (! stream_resolve_include_path($this->viewIncludePath))
-		{
-			throw new Exception("View '$inViewName' not found for module '$inModuleName'");
-		}
+		$this->viewIncludePath = $inViewPath;
 	}
 	
 	public function show()
@@ -51,11 +38,11 @@ class View
 		}
 	}
 	
-	public function setWrapper($inViewName, $inWrapperModule, $inTitle)
+	public function setWrapper($inWrapperViewPath, $inTitle)
 	{
 		$contentStart = $this->wrapperView ? ob_get_clean() : NULL;
 		
-		$this->wrapperView = new View($inViewName, $inWrapperModule);
+		$this->wrapperView = new View($inWrapperViewPath);
 		$this->wrapperView->title = $inTitle;
 		
 		ob_start();

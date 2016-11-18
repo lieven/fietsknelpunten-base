@@ -1,10 +1,15 @@
 <?php
 
+namespace Base;
+
+use \Exception;
+
+
 require_once(__DIR__ . '/core.php');
 
 
 // load module
-$moduleName = GetArg('module', GetConfig('default_module'));
+$moduleName = GetArg('module', Config::Get('modules', 'default'));
 
 if ($moduleName)
 {

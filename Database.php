@@ -1,55 +1,9 @@
 <?php
 
-class ResultSet
-{
-	private $preparedStatement;
-	
-	public function __construct($inPreparedStatement)
-	{
-		$this->preparedStatement = $inPreparedStatement;
-	}
-	
-	public function nextRow()
-	{
-		$result = NULL;
-		
-		if ($this->preparedStatement !== NULL)
-		{
-			$result = $this->preparedStatement->fetch(PDO::FETCH_ASSOC);
-			if ($result == NULL)
-			{
-				$this->preparedStatement = NULL;
-			}
-		}
-		
-		return $result;
-	}
-	
-	public function getResults($inKeyField = NULL, $inLimit = 10000)
-	{
-		$limit = $inLimit;
-		$results = array();
-		
-		if ($inKeyField)
-		{
-			while ($limit-- >= 0 && $row = $this->nextRow())
-			{
-				$results[$row[$inKeyField]] = $row;
-			}
-		}
-		else
-		{
-			while ($limit-- >= 0 && $row = $this->nextRow())
-			{
-				$results[] = $row;
-			}
-		}
-		
-		$this->preparedStatement = NULL;
-		
-		return $results;
-	}
-}
+namespace Base;
+
+use \Exception;
+use \PDO;
 
 
 class Database
@@ -80,7 +34,7 @@ class Database
 	
 	private static function GetConfig($inDatabase)
 	{
-		$config = isset($GLOBALS['config']['databases'][$inDatabase]) ? $GLOBALS['config']['databases'][$inDatabase] : NULL;
+		$config = Config::Get('databases', $inDatabase);
 		if (!is_array($config))
 		{
 			throw new Exception('db_not_configured');
@@ -124,15 +78,6 @@ class Database
 	{
 		// prepare
 		$preparedStatement = $this->connection->prepare($inSQL);
-		
-		$arguments = array();
-		foreach ($inArguments as $key => $value)
-		{
-			if (!isset($this->escapeArguments[$key]) || $this->escapeArguments[$key])
-			{
-				$arguments[sprintf(':%s', $key)] = $value;
-			}
-		}
 		
 		$executed = $preparedStatement->execute($inArguments);
 		if (!$executed)

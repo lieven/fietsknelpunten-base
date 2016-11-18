@@ -1,10 +1,14 @@
 <?php
 
-class ApiException extends Exception
+namespace Base;
+
+
+class ApiException extends \Exception
 {
 	const UNKNOWN_ERROR = 1;
 	const UNKNOWN_ACTION = 2;
 	const PARAMETER_REQUIRED = 3;
+	const PERMISSION_DENIED = 4;
 	
 	public function __construct($inErrorCode, $inMessage = '')
 	{
@@ -12,7 +16,7 @@ class ApiException extends Exception
 	}
 }
 
-class AbstractApiModule extends Module
+class ApiModule extends Module
 {
 	public function run($inAction)
 	{
@@ -21,9 +25,14 @@ class AbstractApiModule extends Module
 			$parameters = $this->getActionParameters($inAction);
 			
 			// Check action
-			if (! is_array($parameters) || ! $this->checkPermissions($inAction))
+			if (! is_array($parameters))
 			{
 				throw new ApiException(ApiException::UNKNOWN_ACTION, 'Unknown action: ' . $inAction);
+			}
+			
+			if (! $this->checkPermissions($inAction))
+			{
+				throw new ApiException(ApiException::PERMISSION_DENIED, 'Permission denied');
 			}
 			
 			$actionMethod = $inAction .'Action';
@@ -74,7 +83,6 @@ class AbstractApiModule extends Module
 	
 	public static function outputJson($inValue)
 	{
-		//header('Content-Type: text/plain');
 		header('Content-Type: application/json');
 		echo @json_encode($inValue);
 		exit;
