@@ -1,6 +1,6 @@
 <?php
 
-// Make a copy of this file at config/config.php and edit the values below:
+// Copy this file to a readable but safe path, edit it and define Base\CONFIG_FILE before calling run.php
 
 \Base\Config::Register
 (
