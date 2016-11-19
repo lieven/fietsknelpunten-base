@@ -2,7 +2,7 @@
 
 namespace Base;
 
-use \PDO;
+use PDO;
 
 
 class ResultSet
@@ -21,9 +21,10 @@ class ResultSet
 		if ($this->preparedStatement !== NULL)
 		{
 			$result = $this->preparedStatement->fetch(PDO::FETCH_ASSOC);
-			if ($result == NULL)
+			if (!is_array($result))
 			{
 				$this->preparedStatement = NULL;
+				$result = NULL;
 			}
 		}
 		
@@ -33,20 +34,28 @@ class ResultSet
 	public function getResults($inKeyField = NULL, $inLimit = 10000)
 	{
 		$limit = $inLimit;
-		$results = array();
+		$results = NULL;
 		
-		if ($inKeyField)
+		$row = $this->nextRow();
+		if ($row !== NULL)
 		{
-			while ($limit-- >= 0 && $row = $this->nextRow())
+			$results = array();
+			
+			if ($inKeyField)
 			{
-				$results[$row[$inKeyField]] = $row;
+				while ($limit-- >= 0 && $row !== NULL)
+				{
+					$results[$row[$inKeyField]] = $row;
+					$row = $this->nextRow();
+				}
 			}
-		}
-		else
-		{
-			while ($limit-- >= 0 && $row = $this->nextRow())
+			else
 			{
-				$results[] = $row;
+				while ($limit-- >= 0 && $row !== NULL)
+				{
+					$results[] = $row;
+					$row = $this->nextRow();
+				}
 			}
 		}
 		

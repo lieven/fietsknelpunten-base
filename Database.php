@@ -2,8 +2,8 @@
 
 namespace Base;
 
-use \Exception;
-use \PDO;
+use Exception;
+use PDO;
 
 
 class Database
@@ -14,14 +14,14 @@ class Database
 	{
 		if (!isset(self::$instances[$inDatabase]))
 		{
-			try
+			//try
 			{
 				self::$instances[$inDatabase] = new self(self::GetConfig($inDatabase));
 			}
-			catch (Exception $e)
+			/*catch (Exception $e)
 			{
 				self::$instances[$inDatabase] = false;
-			}
+			}*/
 		}
 		
 		if (self::$instances[$inDatabase] === false)

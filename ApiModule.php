@@ -2,8 +2,10 @@
 
 namespace Base;
 
+use Exception;
 
-class ApiException extends \Exception
+
+class ApiException extends Exception
 {
 	const UNKNOWN_ERROR = 1;
 	const UNKNOWN_ACTION = 2;
@@ -84,7 +86,7 @@ class ApiModule extends Module
 	public static function outputJson($inValue)
 	{
 		header('Content-Type: application/json');
-		echo @json_encode($inValue);
+		echo @json_encode($inValue, JSON_PRETTY_PRINT);
 		exit;
 	}
 };

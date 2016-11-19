@@ -2,7 +2,7 @@
 
 namespace Base;
 
-use \Exception;
+use Exception;
 
 
 require_once(__DIR__ . '/core.php');

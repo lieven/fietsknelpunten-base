@@ -2,8 +2,8 @@
 
 namespace Base;
 
-use \Exception;
-use \ReflectionClass;
+use Exception;
+use ReflectionClass;
 
 
 class Module

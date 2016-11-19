@@ -2,7 +2,7 @@
 
 namespace Base;
 
-use \Exception;
+use Exception;
 
 
 // fatal exception handling
