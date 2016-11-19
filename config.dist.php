@@ -22,12 +22,12 @@
 		'modules' => array
 		(
 			// e.g. module "login" would be mapped to the \App\LoginModule class
-			'namespace' => '\\App',
+			'namespace' => '\App',
 			
 			// allow for manual mapping between module names and fully qualified class names
 			'override' => array
 			(
-				// e.g. 'api' => '\\MyApp\\APIModuleV2'
+				// e.g. 'api' => '\MyApp\APIModuleV2'
 			),
 			
 			// the name of the default module to be run, if none is set in the request
