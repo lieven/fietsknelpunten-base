@@ -21,6 +21,8 @@ class Database
 			catch (Exception $e)
 			{
 				self::$instances[$inDatabase] = false;
+				
+				throw $e;
 			}
 		}
 		
@@ -38,6 +40,11 @@ class Database
 		if (!is_array($config))
 		{
 			throw new Exception('db_not_configured');
+		}
+		
+		if (isset($config['enabled']) && $config['enabled'] !== true)
+		{
+			throw new Exception('db_config_disabled');
 		}
 		
 		return $config;
