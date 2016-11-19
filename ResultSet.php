@@ -36,30 +36,33 @@ class ResultSet
 		$limit = $inLimit;
 		$results = NULL;
 		
-		$row = $this->nextRow();
-		if ($row !== NULL)
+		if ($this->preparedStatement !== NULL)
 		{
 			$results = array();
-			
-			if ($inKeyField)
-			{
-				while ($limit-- >= 0 && $row !== NULL)
-				{
-					$results[$row[$inKeyField]] = $row;
-					$row = $this->nextRow();
-				}
-			}
-			else
-			{
-				while ($limit-- >= 0 && $row !== NULL)
-				{
-					$results[] = $row;
-					$row = $this->nextRow();
-				}
-			}
-		}
 		
-		$this->preparedStatement = NULL;
+			$row = $this->nextRow();
+			if ($row !== NULL)
+			{
+				if ($inKeyField)
+				{
+					while ($limit-- >= 0 && $row !== NULL)
+					{
+						$results[$row[$inKeyField]] = $row;
+						$row = $this->nextRow();
+					}
+				}
+				else
+				{
+					while ($limit-- >= 0 && $row !== NULL)
+					{
+						$results[] = $row;
+						$row = $this->nextRow();
+					}
+				}
+			}
+						
+			$this->preparedStatement = NULL;
+		}
 		
 		return $results;
 	}
