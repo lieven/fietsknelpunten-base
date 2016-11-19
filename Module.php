@@ -70,6 +70,23 @@ class Module
 		return $this->viewPaths[$viewName];
 	}
 	
+	public static function GetClassName($inModuleName)
+	{
+		$className = Config::Get('modules', 'override', $inModuleName);
+		if (!is_string($className))
+		{
+			$namespace = Config::Get('modules', 'namespace');
+			if (!is_string($namespace))
+			{
+				$namespace = '';
+			}
+			
+			$className = $namespace . '\\' . ucfirst(strtolower($inModuleName)) . 'Module';
+		}
+		
+		return $className;
+	}
+	
 	// Get an instance of this module
 	public static function & Get($inName)
 	{
@@ -84,13 +101,7 @@ class Module
 		
 		if (! isset($sModuleInstances[$key]))
 		{
-			$namespace = Config::Get('modules_namespace');
-			if (!is_string($namespace))
-			{
-				$namespace = '\\';
-			}
-		
-			$className = $namespace . ucfirst($inName) . 'Module';
+			$className = self::GetClassName($inName);
 			
 			$sModuleInstances[$key] = new $className();
 		}
