@@ -70,6 +70,14 @@ class Module
 		return $this->viewPaths[$viewName];
 	}
 	
+	public function createView($inViewName)
+	{
+		$result = new View($this->getViewPath($inViewName));
+		$result->setArg('resourceFolder', ResourcePath($this->name));
+		return $result;
+		
+	}
+	
 	public static function GetClassName($inModuleName)
 	{
 		$className = Config::Get('modules', 'override', $inModuleName);

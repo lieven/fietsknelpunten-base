@@ -48,7 +48,7 @@ class ApiModule extends Module
 			$args = array();
 			foreach ($parameters as $parameter)
 			{
-				$value = GetArg($parameter);
+				$value = GetArg($parameter, NULL, array(INPUT_POST, INPUT_GET));
 				if ($value === null)
 				{
 					throw new ApiException(ApiException::PARAMETER_REQUIRED, 'Parameter required: ' . $parameter);

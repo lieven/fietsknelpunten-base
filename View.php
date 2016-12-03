@@ -5,6 +5,26 @@ namespace Base;
 use Exception;
 
 
+function RecursiveHtmlSpecialChars($inValue)
+{
+	if (is_array($inValue))
+	{
+		$result = array();
+		
+		foreach ($inArray as $key => $value)
+		{
+			$result[$key] = RecursiveHtmlSpecialChars($value);
+		}
+		
+		return $result;
+	}
+	else
+	{
+		return htmlspecialchars($inValue);
+	}
+}
+
+
 class View
 {
 	private $args = array();
@@ -50,6 +70,18 @@ class View
 		if ($contentStart !== NULL)
 		{
 			echo $contentStart;
+		}
+	}
+	
+	public function setArg($inName, $inValue, $inHtmlSpecialChars = true)
+	{
+		if ($inHtmlSpecialChars)
+		{
+			$this->args[$inName] = RecursiveHtmlSpecialChars($inValue);
+		}
+		else
+		{
+			$this->args[$inName] = $inValue;
 		}
 	}
 	

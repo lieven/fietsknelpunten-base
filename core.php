@@ -34,7 +34,24 @@ Config::Load();
 
 function GetArg($inName, $inDefault = NULL, $inType = INPUT_GET, $inFilter = FILTER_DEFAULT)
 {
-	$result = filter_input($inType, $inName, $inFilter);
+	$result = NULL;
+	
+	if (is_array($inType))
+	{
+		foreach ($inType as $type)
+		{
+			$result = filter_input($type, $inName, $inFilter);
+			if ($result !== NULL)
+			{
+				break;
+			}
+		}
+	}
+	else
+	{
+		$result = filter_input($inType, $inName, $inFilter);
+	}
+	
 	if ($result === NULL)
 	{
 		$result = $inDefault;
@@ -50,11 +67,6 @@ function GetHeader($inHeaderName)
 }
 
 
-function Show($inText)
-{
-	echo htmlspecialchars($inText);
-}
-
 // Figure out resources folder path
 
 if (!defined('RESOURCES_FOLDER'))
@@ -66,7 +78,7 @@ if (!defined('RESOURCES_FOLDER'))
 	if (strncmp($rootFolder, $currentFolder, $rootFolderLength) === 0)
 	{
 		$relativePath = substr($currentFolder, $rootFolderLength);
-		$end = strpos($relativePath, '/system');
+		$end = strpos($relativePath, '/Base');
 	
 		define('RESOURCES_FOLDER', substr($relativePath, 0, $end) . '/resources');
 	}
@@ -80,9 +92,4 @@ if (!defined('RESOURCES_FOLDER'))
 function ResourcePath($inFile)
 {
 	return RESOURCES_FOLDER .'/'. $inFile;
-}
-
-function ShowResourcePath($inFile)
-{
-	Show(ResourcePath($inFile));
 }
