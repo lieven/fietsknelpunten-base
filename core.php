@@ -32,7 +32,7 @@ spl_autoload_register('\Base\AutoLoad');
 Config::Load();
 
 
-function GetArg($inName, $inDefault = NULL, $inType = INPUT_GET, $inFilter = FILTER_DEFAULT)
+function GetArg($inName, $inDefault = NULL, $inType = array(INPUT_POST, INPUT_GET), $inFilter = FILTER_DEFAULT)
 {
 	$result = NULL;
 	

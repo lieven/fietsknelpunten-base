@@ -9,12 +9,12 @@ require_once(__DIR__ . '/core.php');
 
 
 // load module
-$moduleName = GetArg('module', Config::Get('modules', 'default'), array(INPUT_POST, INPUT_GET));
+$moduleName = GetArg('module', Config::Get('modules', 'default'));
 
 if ($moduleName)
 {
 	$module =& Module::Get($moduleName);
-	$module->run(GetArg('action', 'default', array(INPUT_POST, INPUT_GET)));
+	$module->run(GetArg('action', 'default'));
 	exit;
 }
 
