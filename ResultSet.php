@@ -66,4 +66,18 @@ class ResultSet
 		
 		return $results;
 	}
+	
+	public function getFirstResult()
+	{
+		$result = NULL;
+		
+		if ($this->preparedStatement !== NULL)
+		{
+			$result = $this->nextRow();
+			
+			$this->preparedStatement = NULL;
+		}
+		
+		return $result;
+	}
 }
