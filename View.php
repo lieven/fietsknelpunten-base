@@ -11,7 +11,7 @@ function RecursiveHtmlSpecialChars($inValue)
 	{
 		$result = array();
 		
-		foreach ($inArray as $key => $value)
+		foreach ($inValue as $key => $value)
 		{
 			$result[$key] = RecursiveHtmlSpecialChars($value);
 		}
