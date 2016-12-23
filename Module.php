@@ -116,4 +116,19 @@ class Module
 		
 		return $sModuleInstances[$key];
 	}
+	
+	public static function RunDefault()
+	{
+		// load module
+		$moduleName = GetArg('module', Config::Get('modules', 'default'));
+
+		if ($moduleName)
+		{
+			$module =& Module::Get($moduleName);
+			$module->run(GetArg('action', 'default'));
+			exit;
+		}
+
+		throw new Exception('No module defined!');
+	}
 }
