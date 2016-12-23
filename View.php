@@ -58,12 +58,11 @@ class View
 		}
 	}
 	
-	public function setWrapper($inWrapperViewPath, $inTitle)
+	public function setWrapper($inWrapperView)
 	{
 		$contentStart = $this->wrapperView ? ob_get_clean() : NULL;
 		
-		$this->wrapperView = new View($inWrapperViewPath);
-		$this->wrapperView->title = $inTitle;
+		$this->wrapperView = $inWrapperView;
 		
 		ob_start();
 		
