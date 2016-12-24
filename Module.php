@@ -37,11 +37,9 @@ class Module
 	// overload standard view paths for this module
 	protected function setViewPath($inViewName, $inViewPath)
 	{
-		$viewName = strtolower($inViewName);
-		
-		if (! preg_match('/^([a-z][a-z0-9_]*)$/', $viewName))
+		if (! preg_match('/^([a-zA-Z][a-zA-Z0-9_]*)$/', $inViewName))
 		{
-			throw new Exception('Invalid view name: '. $viewName);
+			throw new Exception('Invalid view name: '. $inViewName);
 		}
 		
 		$this->viewPaths[$inViewName] = $inViewPath;
@@ -50,24 +48,22 @@ class Module
 	// get path for a view
 	public function getViewPath($inViewName)
 	{
-		$viewName = strtolower($inViewName);
-		
-		if (! preg_match('/^([a-z][a-z0-9_]*)$/', $viewName))
+		if (! preg_match('/^([a-zA-Z][a-zA-Z0-9_]*)$/', $inViewName))
 		{
-			throw new Exception('Invalid view name: '. $viewName);
+			throw new Exception('Invalid view name: '. $inViewName);
 		}
 		
-		if (!isset($this->viewPaths[$viewName]))
+		if (!isset($this->viewPaths[$inViewName]))
 		{
 			$reflector = new ReflectionClass(get_class($this));
 			$pathInfo = pathinfo($reflector->getFileName());
 			
-			$viewPath = $pathInfo['dirname'] . '/'. $pathInfo['filename'] . '.' . $viewName . '.php';
+			$viewPath = $pathInfo['dirname'] . '/'. $pathInfo['filename'] . '.' . $inViewName . '.php';
 			
-			$this->viewPaths[$viewName] = $viewPath;
+			$this->viewPaths[$inViewName] = $viewPath;
 		}
 		
-		return $this->viewPaths[$viewName];
+		return $this->viewPaths[$inViewName];
 	}
 	
 	public function createView($inViewName)
