@@ -2,6 +2,8 @@
 
 namespace Base;
 
+use Exception;
+
 
 class ApiModule extends Module
 {

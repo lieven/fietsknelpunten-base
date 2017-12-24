@@ -8,6 +8,32 @@ use PDO;
 
 class Database
 {
+	private static $configs = array();
+	
+	public static function SetConfig($inConfiguration, $inDatabase = 'main')
+	{
+		self::$configs[$inDatabase] = $inConfiguration;
+	}
+	
+	private static function GetConfig($inDatabase)
+	{
+		$config = self::$configs[$inDatabase];
+		if (!is_array($config))
+		{
+			throw new Exception('db_not_configured: '. print_r(self::$configs, true));
+		}
+		
+		if (isset($config['enabled']) && $config['enabled'] !== true)
+		{
+			throw new Exception('db_config_disabled');
+		}
+		
+		return $config;
+	}
+	
+
+// MARK: -
+
 	private static $instances = array();
 	
 	public static function & Get($inDatabase = 'main')
@@ -34,22 +60,8 @@ class Database
 		return self::$instances[$inDatabase];
 	}
 	
-	private static function GetConfig($inDatabase)
-	{
-		$config = Config::Get('databases', $inDatabase);
-		if (!is_array($config))
-		{
-			throw new Exception('db_not_configured');
-		}
-		
-		if (isset($config['enabled']) && $config['enabled'] !== true)
-		{
-			throw new Exception('db_config_disabled');
-		}
-		
-		return $config;
-	}
-	
+
+// MARK: -
 	
 	private $connection = NULL;
 

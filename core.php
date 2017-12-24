@@ -62,31 +62,3 @@ function GetHeader($inHeaderName)
 	$key = 'HTTP_' . strtoupper(str_replace('-', '_', $inHeaderName));
 	return isset($_SERVER[$key]) ? $_SERVER[$key] : NULL;
 }
-
-
-// Figure out resources folder path
-
-if (!defined('RESOURCES_FOLDER'))
-{
-	$rootFolder = dirname($_SERVER['SCRIPT_FILENAME']) .'/';
-	$currentFolder = __DIR__;
-	$rootFolderLength = strlen($rootFolder);
-
-	if (strncmp($rootFolder, $currentFolder, $rootFolderLength) === 0)
-	{
-		$relativePath = substr($currentFolder, $rootFolderLength);
-		$end = strpos($relativePath, '/Base');
-	
-		define('RESOURCES_FOLDER', substr($relativePath, 0, $end) . '/resources');
-	}
-	else
-	{
-		throw new Exception("Can't figure out resources folder");
-	}
-}
-
-
-function ResourcePath($inFile)
-{
-	return RESOURCES_FOLDER .'/'. $inFile;
-}

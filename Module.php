@@ -8,10 +8,73 @@ use ReflectionClass;
 
 class Module
 {
+	private static $defaultModuleName = NULL;
+	private static $moduleClassNames = array(); // key: module name, value: fully qualified module class name
+	
+	public static function SetDefault($defaultModuleName)
+	{
+		self::$defaultModuleName = strtolower($defaultModuleName);
+	}
+	
+	public static function Register($moduleName, $moduleClassName)
+	{
+		self::$moduleClassNames[strtolower($moduleName)] = $moduleClassName;
+	}
+	
+	private static function GetClassName($inModuleName)
+	{
+		return isset(self::$moduleClassNames[$inModuleName]) ? self::$moduleClassNames[$inModuleName] : NULL;
+	}
+	
+	// Get an instance of this module
+	public static function & Get($inName)
+	{
+		static $sModuleInstances = array();
+		
+		if (! preg_match('/^([a-zA-Z][a-zA-Z0-9_]*)$/', $inName))
+		{
+			throw new Exception('Invalid module name: '. $inName);
+		}
+		
+		$key = strtolower($inName);
+		
+		if (!isset($sModuleInstances[$key]))
+		{
+			$className = self::GetClassName($key);
+			if (is_string($className))
+			{
+				$sModuleInstances[$key] = new $className();
+			}
+			else
+			{
+				throw new Exception('Unknown module: '. $inName);
+			}
+			
+		}
+		
+		return $sModuleInstances[$key];
+	}
+	
+	public static function Start()
+	{
+		// load module
+		$moduleName = GetArg('module', self::$defaultModuleName);
+		
+		if ($moduleName)
+		{
+			$module =& Module::Get($moduleName);
+			$module->run(GetArg('action', 'default'));
+			exit;
+		}
+
+		throw new Exception('No module defined!');
+	}
+	
+	
 	protected $name;
 	protected $viewPaths;
 	
-	public function __construct($inName)
+	protected function __construct($inName)
 	{
 		$this->name = $inName;
 		$this->viewPaths = array();
@@ -46,7 +109,7 @@ class Module
 	}
 	
 	// get path for a view
-	public function getViewPath($inViewName)
+	protected function getViewPath($inViewName)
 	{
 		if (! preg_match('/^([a-zA-Z][a-zA-Z0-9_]*)$/', $inViewName))
 		{
@@ -66,65 +129,11 @@ class Module
 		return $this->viewPaths[$inViewName];
 	}
 	
-	public function createView($inViewName)
+	protected function createView($inViewName)
 	{
 		$result = new View($this->getViewPath($inViewName));
-		$result->setArg('resourceFolder', ResourcePath($this->name));
 		return $result;
 		
 	}
 	
-	public static function GetClassName($inModuleName)
-	{
-		$className = Config::Get('modules', 'override', $inModuleName);
-		if (!is_string($className))
-		{
-			$namespace = Config::Get('modules', 'namespace');
-			if (!is_string($namespace))
-			{
-				$namespace = '';
-			}
-			
-			$className = $namespace . '\\' . ucfirst(strtolower($inModuleName)) . 'Module';
-		}
-		
-		return $className;
-	}
-	
-	// Get an instance of this module
-	public static function & Get($inName)
-	{
-		static $sModuleInstances = array();
-		
-		if (! preg_match('/^([a-zA-Z][a-zA-Z0-9_]*)$/', $inName))
-		{
-			throw new Exception('Invalid module name: '. $inName);
-		}
-		
-		$key = strtolower($inName);
-		
-		if (! isset($sModuleInstances[$key]))
-		{
-			$className = self::GetClassName($inName);
-			
-			$sModuleInstances[$key] = new $className();
-		}
-		
-		return $sModuleInstances[$key];
-	}
-	
-	public static function RunDefault()
-	{
-		// load module
-		$moduleName = GetArg('module', Config::Get('modules', 'default'));
-
-		if ($moduleName)
-		{
-			$module =& Module::Get($moduleName);
-			$module->run(GetArg('action', 'default'));
-			exit;
-		}
-
-		throw new Exception('No module defined!');
-	}
 }
