@@ -98,10 +98,10 @@ class Database
 		// prepare
 		$preparedStatement = $this->connection->prepare($inSQL);
 		
-		$executed = $preparedStatement->execute($inArguments);
+		$executed = @$preparedStatement->execute($inArguments);
 		if (!$executed)
 		{
-			throw new Exception(); // TODO: improve exceptions
+			throw new Exception('Database error: '. $preparedStatement->errorCode()); // TODO: improve exceptions
 		}
 		
 		return $preparedStatement;
